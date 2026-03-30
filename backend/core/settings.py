@@ -10,9 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
 import os
+from datetime import timedelta
+from pathlib import Path
+
 import dj_database_url
+
+
+def env_bool(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_list(name: str, default: list[str]) -> list[str]:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,16 +38,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tl(imlbnt9pm@u&^e6w!dhy^)fswq7_p-qgalfk-si#vvtz+1y'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool("DEBUG", default=True)
+AUTH_ENABLED = env_bool("AUTH_ENABLED", default=False)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+secret_key_from_env = os.getenv("SECRET_KEY")
+if not DEBUG and not secret_key_from_env:
+    raise ValueError("SECRET_KEY must be set when DEBUG is False.")
 
-CORS_ALLOW_ALL_ORIGINS = True
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = secret_key_from_env or "local-dev-insecure-key"
 
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ['localhost', '127.0.0.1', '.onrender.com'])
+
+# CORS Configuration for Secure Cookies
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = env_list(
+    "CORS_ALLOWED_ORIGINS",
+    [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+)
 
 # Application definition
 
@@ -44,6 +74,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'rest_framework_simplejwt', # Added as per common JWT setup
+    'rest_framework_simplejwt.token_blacklist', # Added for secure logout
 ]
 
 MIDDLEWARE = [
@@ -95,7 +126,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': str(BASE_DIR / 'db.sqlite3'),
         }
     }
 
@@ -146,9 +177,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }

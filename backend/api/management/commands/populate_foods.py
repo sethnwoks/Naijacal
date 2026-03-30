@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand
 from api.models import Food
 
+DEFAULT_GRAMS_PER_UNIT = 100.0
+DEFAULT_UNIT = 'serving'
+
 CALORIE_DATABASE = {
     # Swallows & Staples
     'eba': {'calories_per_100g': 360, 'unit': 'g'},  # Updated for accuracy
@@ -137,8 +140,9 @@ class Command(BaseCommand):
             food, created = Food.objects.update_or_create(
                 name=name,
                 defaults={
-                    "calories_per_100g": data["calories_per_100g"], 
-                    "unit": data["unit"]
+                    "calories_per_100g": data["calories_per_100g"],
+                    "grams_per_unit": data.get("grams_per_unit", DEFAULT_GRAMS_PER_UNIT),
+                    "default_unit": data.get("default_unit", DEFAULT_UNIT),
                 }
             )
             if created:

@@ -3,31 +3,13 @@ Extract food data from foods.txt research file.
 This script parses the Nigerian food calorie data and outputs a clean Python dictionary.
 """
 
-import re
 import json
 
-def parse_foods_txt(file_path):
-    """Parse the foods.txt file and extract structured food data."""
-    
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    foods = {}
-    
-    # Extract data from the structured tables in the file
-    # Pattern: FOOD_NAME | PORTION_SIZE | CALORIES
-    
-    # Common patterns for food entries
-    patterns = [
-        # Pattern 1: "Food Name\n\nPortion\n\nCalories" (table format)
-        r'([A-Za-z\s\(\)]+?)\n+(\d+g|\d+ml|[\d\.]+\s*(?:Cup|Table\s*[Ss]poon|Tea\s*[Ss]poon|Medium|Large|Small|Piece|Slice).*?)\n+(\d+)',
-        # Pattern 2: Direct mentions like "1 cup of X is Y calories"
-        r'(?:1|one)\s+cup\s+of\s+([A-Za-z\s]+?)\s+(?:is|contains?)\s+(?:about\s+)?(\d+)\s+calories',
-    ]
-    
+def parse_foods_txt(_file_path):
+    """Return the curated manual food dataset derived from the research file."""
+
     # Manual extraction of key foods mentioned in the text
     # This is more reliable given the unstructured nature of the source
-    
     manual_foods = {
         # Swallows
         'amala': {'calories_per_100g': 250, 'unit': 'g'},  # 352 per cup, ~140g per cup

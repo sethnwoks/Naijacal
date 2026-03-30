@@ -8,6 +8,9 @@ from api.models import Food
 import json
 import os
 
+DEFAULT_GRAMS_PER_UNIT = 100.0
+DEFAULT_UNIT = 'serving'
+
 class Command(BaseCommand):
     help = 'Update food database with extracted Nigerian food data'
 
@@ -26,7 +29,7 @@ class Command(BaseCommand):
         existing_foods = {food.name.lower(): food for food in Food.objects.all()}
         
         self.stdout.write(f"\n{'='*60}")
-        self.stdout.write(f"FOOD DATABASE UPDATE REPORT")
+        self.stdout.write("FOOD DATABASE UPDATE REPORT")
         self.stdout.write(f"{'='*60}\n")
         self.stdout.write(f"Current database: {len(existing_foods)} foods")
         self.stdout.write(f"New data source: {len(new_foods)} foods\n")
@@ -66,7 +69,8 @@ class Command(BaseCommand):
                     Food(
                         name=food_name,
                         calories_per_100g=food_data['calories_per_100g'],
-                        unit=food_data.get('unit', 'g')
+                        grams_per_unit=food_data.get('grams_per_unit', DEFAULT_GRAMS_PER_UNIT),
+                        default_unit=food_data.get('default_unit', DEFAULT_UNIT),
                     )
                 )
                 added_count += 1
@@ -79,7 +83,7 @@ class Command(BaseCommand):
         new_total = Food.objects.count()
         
         self.stdout.write(f"\n{'='*60}")
-        self.stdout.write(self.style.SUCCESS(f"✓ Update Complete!"))
+        self.stdout.write(self.style.SUCCESS("✓ Update Complete!"))
         self.stdout.write(f"{'='*60}\n")
         self.stdout.write(f"  Added: {added_count} new foods")
         self.stdout.write(f"  Updated: {updated_count} existing foods")

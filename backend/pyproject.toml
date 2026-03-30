@@ -1,0 +1,37 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "bandit>=1.9.4",
+    "code2flow>=2.5.1",
+    "debugpy>=1.8.20",
+    "diagrams>=0.25.1",
+    "dj-database-url==2.1.0",
+    "django==5.0",
+    "django-cors-headers==4.3.1",
+    "django-ratelimit>=4.1.0",
+    "djangorestframework>=3.14",
+    "djangorestframework-simplejwt>=5.3",
+    "google-genai>=1.66.0",
+    "gunicorn==21.2.0",
+    "httpx>=0.28.1",
+    "hunter>=3.9.0",
+    "icecream>=2.1.10",
+    "mypy>=1.19.1",
+    "objgraph>=3.6.2",
+    "openai>=2.26.0",
+    "psycopg[binary]==3.3.2",
+    "py-spy>=0.4.1",
+    "pydantic>=2.12.5",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.12.0",
+    "pytest-mock>=3.15.1",
+    "python-dotenv>=1.2.2",
+    "ruff>=0.15.8",
+    "safety>=3.7.0",
+    "scalene>=2.2.1",
+    "whitenoise==6.6.0",
+]
