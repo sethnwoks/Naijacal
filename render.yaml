@@ -1,11 +1,10 @@
 services:
-  # --- Backend: Django API (Web Service) ---
+  # --- Backend: Django API (Native Python) ---
   - type: web
     name: naijacal-backend
-    runtime: docker
-    dockerContext: backend
-    dockerfilePath: Dockerfile
-    plan: free
+    runtime: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && python manage.py migrate && gunicorn core.wsgi:application
     envVars:
       - key: DEBUG
         value: "0"
