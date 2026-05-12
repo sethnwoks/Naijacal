@@ -52,6 +52,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .logo {
@@ -93,8 +96,9 @@
 .main-content {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding: 64px 24px 32px;
 }
 
 .card {
@@ -110,6 +114,10 @@
   align-items: center;
 }
 
+.main-card {
+  max-width: 760px;
+}
+
 .card-title {
   font-size: 1.7rem;
   font-weight: bold;
@@ -123,6 +131,36 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.trial-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hero-copy {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fb8c00;
+}
+
+.hero-subtitle {
+  margin: 0 0 8px;
+  color: #666;
+  line-height: 1.6;
 }
 
 .food-textarea {
@@ -194,5 +232,29 @@ form {
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 20px;
+    align-items: flex-start;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .trial-badge {
+    font-size: 0.8rem;
+    padding: 7px 12px;
+  }
+
+  .main-content {
+    padding: 32px 16px 24px;
+  }
+
+  .card {
+    padding: 28px 22px;
   }
 }

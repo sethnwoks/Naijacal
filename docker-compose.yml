@@ -34,11 +34,7 @@ services:
       - ./backend/.env
     environment:
       - DEBUG=1
-      - DB_HOST=db
-      - DB_NAME=health_app_db
-      - DB_USER=health_app_user
-      - DB_PASSWORD=712456Nwokolo
-      - DB_PORT=5432
+      - DATABASE_URL=postgres://health_app_user:712456Nwokolo@db:5432/health_app_db
     depends_on:
       db:
         condition: service_healthy

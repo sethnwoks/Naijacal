@@ -1,26 +1,28 @@
 # Python
 venv/
+.venv/
+backend/.venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+.python-version
 *.log
 *.pot
-*.pyc
 db.sqlite3
 db.sqlite3-journal
 
 # Django
-*.log
 local_settings.py
+*.log
 
-# Environment variables
+# Environment variables (CRITICAL)
 .env
 backend/.env
 frontend/frontend/.env
 
-# Node
+# Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -29,34 +31,35 @@ build/
 .pnp
 .pnp.js
 
-# Testing
+# Testing & Linting
 coverage/
 .nyc_output
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# IDEs
+# IDEs & OS
 .vscode/
 .idea/
+.codex
 *.swp
 *.swo
 *~
 .DS_Store
-
-# OS
 Thumbs.db
-.DS_Store
 
-# Backup files
+# Project-specific Cleanup
+file_tree.txt
 backend_flask_backup/
+HIRING_PANEL_REVIEW.md
 *.bak
 *.backup
+architecture.txt
+backend/api/views.txt
 
 # Distribution
 dist/
 *.egg-info/
-
-# Project-specific (temporary/research files)
-foods.txt
-backend/extracted_foods.json
-jwt_implementation_log.txt
-react_foundations.txt
-backend/core/bandit
