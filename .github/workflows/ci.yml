@@ -1,0 +1,50 @@
+name: NaijaCal CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      db:
+        image: postgres:15
+        env:
+          POSTGRES_DB: health_app_db
+          POSTGRES_USER: health_app_user
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install Dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run Django Tests
+      env:
+        DEBUG: 1
+        SECRET_KEY: test-key-for-ci
+        DATABASE_URL: postgres://health_app_user:password@localhost:5432/health_app_db
+        GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
+      run: |
+        cd backend
+        pytest --cov=api tests/

@@ -1,0 +1,38 @@
+services:
+  # --- Backend: Django API ---
+  - type: web
+    name: naijacal-backend
+    runtime: docker
+    dockerContext: backend
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: DEBUG
+        value: "0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: naijacal-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: GEMINI_MODEL_NAME
+        value: gemini-2.5-flash
+
+  # --- Frontend: React Static Site ---
+  - type: static
+    name: naijacal-frontend
+    runtime: node
+    buildCommand: cd frontend/frontend && npm install && npm run build
+    publishPath: frontend/frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: naijacal-backend
+          property: host
+
+databases:
+  - name: naijacal-db
+    plan: free

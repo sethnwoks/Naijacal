@@ -9,6 +9,7 @@ export default function App() {
     const [calories, setCalories] = useState(null);
     const [parsedItems, setParsedItems] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [remainingTrials, setRemainingTrials] = useState(FREE_TRIAL_LIMIT);
 
     const handleParse = async () => {
         setMessage('');
@@ -18,6 +19,12 @@ export default function App() {
 
         if (foodLog.trim() === '') {
             setMessage('The food log is empty. Tell me what you ate!');
+            setLoading(false);
+            return;
+        }
+
+        if (foodLog.length > 500) {
+            setMessage('Whoa! That is a bit too long. Try to keep it under 500 characters.');
             setLoading(false);
             return;
         }
@@ -32,10 +39,19 @@ export default function App() {
 
             if (!response.ok) {
                 setMessage(data.error || 'Unable to process this request right now.');
+                // Update trials even on error if the backend provided them (e.g., 429 errors)
+                if (data.remaining_trials !== undefined) {
+                    setRemainingTrials(data.remaining_trials);
+                }
             } else {
                 setParsedItems(data.parsed_items);
                 setCalories(data.total_calories);
                 setMessage('Successfully calculated!');
+                
+                // Update the dynamic trial counter
+                if (data.remaining_trials !== undefined) {
+                    setRemainingTrials(data.remaining_trials);
+                }
             }
         } catch (err) {
             setMessage('Connection lost. Is the backend running?');
@@ -48,7 +64,9 @@ export default function App() {
         <div className="main-bg">
             <header className="header">
                 <span className="logo">NaijaCal</span>
-                <span className="trial-badge">{FREE_TRIAL_LIMIT} free tries</span>
+                <span className="trial-badge">
+                    {remainingTrials} {remainingTrials === 1 ? 'try' : 'tries'} left
+                </span>
             </header>
 
             <main className="main-content">
