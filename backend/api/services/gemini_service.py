@@ -1,17 +1,22 @@
 import os
 import logging
 from itertools import cycle
-
 from dotenv import load_dotenv
 from google.genai import Client
 
 load_dotenv()
-
 logger = logging.getLogger(__name__)
 
-
-class GeminiRotationService:
+class LLMRotationService:
+    """
+    Orchestrates LLM requests with high availability via API key rotation.
+    
+    This service ensures that the application remains functional even when 
+    individual API keys hit quota limits (429 errors). It cycles through 
+    a pool of available keys to maximize uptime for the free trial tier.
+    """
     def __init__(self):
+        # Initialize the pool from environment variables (up to 3 keys)
         keys = [
             key
             for key in (
@@ -23,19 +28,25 @@ class GeminiRotationService:
         ]
 
         if not keys:
-            logger.critical("No Gemini API keys found in environment.")
-            raise ValueError("No Gemini API keys found in environment.")
+            logger.critical("AI configuration error: No provider keys found.")
+            raise ValueError("No LLM API keys found in environment.")
 
         self._keys = keys
         self._key_cycler = cycle(keys)
         self._current_key = next(self._key_cycler)
 
     def _rotate_key(self):
-        logger.warning("Rotating Gemini API key.")
+        """Switches the active API key in the pool."""
         self._current_key = next(self._key_cycler)
-        logger.info("Switched to next Gemini API key.")
+        logger.info("Service: Rotated to next available AI provider key.")
 
     def parse_food_log(self, food_log_text: str, max_retries: int = 3) -> str:
+        """
+        Interprets natural language food logs into structured JSON.
+        
+        Uses a strictly-formatted prompt to ensure the LLM returns a parseable 
+        JSON array without conversational filler or markdown fences.
+        """
         prompt = f"""
 You are a Nigerian nutrition expert AI.
 
@@ -51,7 +62,7 @@ Each item must follow this structure:
 [
   {{
     "food_name": "egg",
-    "quantity": 6,
+    "quantity": 1,
     "unit": "piece"
   }}
 ]
@@ -61,46 +72,36 @@ FOOD LOG:
 """.strip()
 
         attempts = 0
-
         while attempts < max_retries:
             try:
                 client = Client(api_key=self._current_key)
-
-                logger.info(
-                    "Sending food log to Gemini (attempt %s/%s).",
-                    attempts + 1,
-                    max_retries,
-                )
-
+                
+                # Request inference from a high-speed Flash model
+                model_name = os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash")
                 response = client.models.generate_content(
-                    model="gemini-2.5-flash",
+                    model=model_name,
                     contents=prompt,
                 )
 
                 if not response.text:
-                    logger.error("Gemini returned an empty response body.")
-                    raise ValueError("AI returned an empty response.")
+                    raise ValueError("LLM returned an empty response body.")
 
-                logger.info("Gemini returned a response successfully.")
                 return response.text
 
             except Exception as e:
-                error_str = str(e).lower()
-                logger.error(
-                    "Gemini API error on attempt %s: %s",
-                    attempts + 1,
-                    str(e),
-                )
+                error_msg = str(e).lower()
+                logger.error(f"Inference attempt {attempts + 1} failed: {error_msg}")
 
-                if "429" in error_str or "quota" in error_str or "exhausted" in error_str:
+                # Automatic rotation triggered by rate-limits or quota exhaustion
+                if any(kw in error_msg for kw in ["429", "quota", "exhausted", "limit"]):
                     attempts += 1
                     self._rotate_key()
                     continue
 
                 raise
 
-        logger.critical("All Gemini API keys failed after retries.")
-        raise Exception("AI service unavailable. Please try again later.")
+        logger.critical("Critical Failure: All AI provider keys in the pool are exhausted.")
+        raise Exception("AI service temporarily unavailable due to high demand.")
 
-
-gemini_service = GeminiRotationService()
+# Global singleton instance for app-wide use
+gemini_service = LLMRotationService()
