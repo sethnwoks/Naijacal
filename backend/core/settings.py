@@ -39,15 +39,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env_bool("DEBUG", default=True)
+DEBUG = env_bool("DEBUG", default=False)
 AUTH_ENABLED = env_bool("AUTH_ENABLED", default=False)
 
-secret_key_from_env = os.getenv("SECRET_KEY")
-if not DEBUG and not secret_key_from_env:
-    raise ValueError("SECRET_KEY must be set when DEBUG is False.")
+# Security Hardening: Ensure we never run in production with an insecure setup
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not DEBUG and not SECRET_KEY:
+    raise ValueError("CRITICAL SECURITY ERROR: SECRET_KEY must be set when DEBUG is False.")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret_key_from_env or "local-dev-insecure-key"
+# Fallback only for local development
+if not SECRET_KEY:
+    SECRET_KEY = "local-dev-insecure-key-change-me"
+
 
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ['localhost', '127.0.0.1', '.onrender.com'])
 
