@@ -1,6 +1,7 @@
 import pytest
 from django.urls import reverse
 from django.core.cache import cache
+from unittest.mock import patch
 
 @pytest.mark.django_db
 def test_input_length_limit_enforcement(api_client):
@@ -18,12 +19,13 @@ def test_input_sanitization_xss(api_client):
     url = reverse('parse_log')
     payload = {"foodLog": "<script>alert('hack')</script> jollof rice"}
     
-    # We just want to see if the view proceeds past the sanitization check
-    # and if the log is cleaned.
-    response = api_client.post(url, payload, format='json')
+    # Mock the LLM service to avoid real API calls during sanitization test
+    with patch('api.services.gemini_service.gemini_service.parse_food_log') as mock_llm:
+        mock_llm.return_value = '[]'  # Return empty list to skip further processing
+        
+        response = api_client.post(url, payload, format='json')
     
-    # Even if it fails downstream (because of mocking), the check 
-    # should have happened.
+    # Should not crash with 500 error - either succeeds or fails gracefully
     assert response.status_code != 500 
 
 @pytest.mark.django_db

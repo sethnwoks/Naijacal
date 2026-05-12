@@ -1,65 +1,50 @@
+```gitignore
 # Python
-venv/
-.venv/
-backend/.venv/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .Python
-.python-version
-*.log
-*.pot
-db.sqlite3
-db.sqlite3-journal
-
-# Django
-local_settings.py
-*.log
-
-# Environment variables (CRITICAL)
-.env
-backend/.env
-frontend/frontend/.env
-
-# Node.js
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 build/
-.pnp
-.pnp.js
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Testing & Linting
-coverage/
-.nyc_output
-.coverage
-.coverage.*
-htmlcov/
+# Testing
 .pytest_cache/
-.mypy_cache/
-.ruff_cache/
+.coverage
+htmlcov/
 
-# IDEs & OS
+# Environment
+.env
+.env.local
+.env.*
+.venv/
+venv/
+ENV/
+
+# IDE
 .vscode/
 .idea/
-.codex
 *.swp
 *.swo
-*~
+*.tmp
+
+# Logs
+*.log
+
+# OS
 .DS_Store
 Thumbs.db
-
-# Project-specific Cleanup
-file_tree.txt
-backend_flask_backup/
-HIRING_PANEL_REVIEW.md
-*.bak
-*.backup
-architecture.txt
-backend/api/views.txt
-
-# Distribution
-dist/
-*.egg-info/
+```
