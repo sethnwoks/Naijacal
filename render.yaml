@@ -21,7 +21,8 @@ services:
         value: gemini-2.5-flash
 
   # --- Frontend: React Static Site ---
-  - type: static
+  - type: web
+    env: static
     name: naijacal-frontend
     runtime: node
     buildCommand: cd frontend/frontend && npm install && npm run build
