@@ -5,6 +5,7 @@ import logging
 
 from api.services.analyze_food_log import analyze_food_log
 from api.services.rate_limit_service import check_anonymous_parse_limit
+import html
 
 logger = logging.getLogger(__name__)
 
@@ -19,11 +20,18 @@ def submit_food_log(request):
     2. Enforces anonymous rate limiting (Free Trial mode).
     3. Triggers the AI-driven nutritional analysis pipeline.
     """
-    food_log = request.data.get("foodLog", "").strip()
+    raw_food_log = request.data.get("foodLog", "").strip()
+    food_log = html.escape(raw_food_log)
 
     if not food_log:
         return JsonResponse(
             {"error": "The food log cannot be empty."},
+            status=400,
+        )
+
+    if len(food_log) > 500:
+        return JsonResponse(
+            {"error": "Food log is too long. Please keep it under 500 characters."},
             status=400,
         )
 
