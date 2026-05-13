@@ -90,14 +90,17 @@ FOOD LOG:
 
             except Exception as e:
                 error_msg = str(e).lower()
-                logger.error(f"Inference attempt {attempts + 1} failed: {error_msg}")
+                logger.error(f"AI Service: Attempt {attempts + 1} failed with error: {error_msg}")
 
-                # Automatic rotation triggered by rate-limits or quota exhaustion
-                if any(kw in error_msg for kw in ["429", "quota", "exhausted", "limit"]):
-                    attempts += 1
+                # Automatic failover: try the next key for ANY error
+                attempts += 1
+                if attempts < max_retries:
+                    logger.warning(f"AI Service: Rotating key and retrying... (Attempt {attempts + 1})")
                     self._rotate_key()
                     continue
 
+                # If all retries fail, raise the final error
+                logger.critical("AI Service: All failover attempts exhausted.")
                 raise
 
         logger.critical("Critical Failure: All AI provider keys in the pool are exhausted.")
