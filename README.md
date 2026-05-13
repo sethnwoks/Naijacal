@@ -1,116 +1,125 @@
-# 📖 NaijaCal - AI Nigerian Calorie Tracker
+# 🥘 NaijaCal: AI-Powered Nigerian Nutrition Platform
 
-NaijaCal is a full-stack engineering solution designed to solve the "local context" problem in nutrition tracking. While global calorie apps often fail to recognize specific Nigerian meals and portions, NaijaCal leverages a **Large Language Model (LLM)** and a curated local database to provide accurate, natural-language calorie estimates.
+[![CI Pipeline](https://github.com/sethnwoks/NaijaCal/actions/workflows/ci.yml/badge.svg)](https://github.com/sethnwoks/NaijaCal/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+### 🚀 [Live Demo: NaijaCal Platform](https://naijacal-frontend.onrender.com)
+
+📖 **Overview**  
+NaijaCal is a production-grade health application designed to bridge the gap in nutritional tracking for West African cuisine. Using Gemini 1.5 Flash and a curated database of Nigerian foods, it interprets natural language logs (e.g., *"I had 2 wraps of eba and a bowl of egusi"*) and provides instant, accurate caloric breakdowns.
 
 ---
 
 ## ✨ Features
-
-- 🧠 **AI-Powered Parsing**: Processes free-form text like *"I had two wraps of eba and a bowl of egusi"* into structured data.
-- 🇳🇬 **Domain Specificity**: Optimized for Nigerian cuisine, identifying items from Jollof rice to Amala.
-- 🛡️ **Production Resilience**: Implements API key rotation across multiple provider keys and IP-based rate limiting.
-- 🐳 **Containerized Architecture**: Fully Dockerized for consistent development and deployment.
-- ⚡ **Layered Backend**: Clean separation between AI interpretation, database enrichment, and deterministic calorie math.
+- 🧠 **AI-Powered Parsing**: Real-time natural language processing using Google Gemini.
+- 🍲 **Culturally Relevant**: Specifically tuned for Nigerian portion sizes and traditional meals (Swallow, Soups, Proteins).
+- 🛡️ **Production Hardened**: Built with HSTS, secure cookie headers, and JWT-ready architecture.
+- 🔄 **High Availability**: Custom AI Key Rotation service to maximize uptime on free-tier limits.
+- ⚡ **Full-Stack Performance**: React frontend with a clean, modern UI and a Django REST backend.
 
 ---
 
 ## 📦 Technologies
-
-- **Backend**: Python 3.11, Django 5, Django REST Framework.
-- **AI Engine**: Advanced Large Language Model (LLM) integration.
-- **Database**: PostgreSQL (Production) / SQLite (Local).
-- **Frontend**: React 19, CSS3 (Vanilla).
-- **DevOps**: Docker, Docker Compose.
-
----
-
-## 🔗 Component Flow
-
-```mermaid
-graph TD
-    A[React Frontend] -->|POST /parse-log| B[Django API View]
-    B --> C{Rate Limiter}
-    C -->|Allowed| D[Analyze Food Log Service]
-    D --> E[Gemini Interpreter]
-    E -->|Structured JSON| F[Food Repository]
-    F -->|Query DB| G[(Nigerian Food DB)]
-    G -->|Nutrition Data| F
-    F --> H[Calorie Calculator]
-    H -->|Final Calculation| B
-    B -->|JSON Response| A
-```
+- **Backend**: Python 3.11, Django 5.0+, Django REST Framework.
+- **AI Engine**: Google Gemini 1.5 Flash (via `google-genai` SDK).
+- **Frontend**: React.js, Vanilla CSS (Premium Design).
+- **Database**: PostgreSQL (Production), SQLite (Development).
+- **Infrastructure**: Docker, Docker Compose, Render Blueprints.
+- **Testing**: Pytest, Pytest-Django, Pytest-Cov.
 
 ---
 
 ## 🗂️ Repository Structure
 
-- **`backend/api/`**: The core application logic.
-    - **`domain/`**: Contains `calorie_calculator.py`—the source of truth for all nutritional mathematics.
-    - **`services/`**: 
-        - `gemini_service.py`: Handles AI orchestration, key rotation, and error retries.
-        - `food_interpreter.py`: Validates and cleans model outputs.
-        - `rate_limit_service.py`: Manages anonymous trial quotas.
-    - **`repositories/`**: `food_repository.py` handles the data-mapping layer between AI items and database entries.
-    - **`views/`**: Clean API entry points.
-- **`frontend/`**: A modern React SPA designed for a mobile-first "Log and See" experience.
-- **`docker-compose.yml`**: Defines the multi-container environment (App + DB).
+```bash
+.
+├── backend/                # Django REST API
+│   ├── api/                # Core business logic
+│   │   ├── services/       # AI Interpretation & Key Rotation logic
+│   │   ├── repositories/   # Clean Data Access Layer (DAL)
+│   │   └── views/          # API Endpoints & Request Handling
+│   ├── core/               # Main settings & URL routing
+│   ├── tests/              # Full Testing Pyramid (Unit, Integration, Security)
+│   └── requirements.txt    # Managed production dependencies
+├── frontend/               # React Application
+│   └── frontend/           # Source code & UI Components
+├── .github/workflows/      # CI/CD Pipeline (GitHub Actions)
+├── docker-compose.yml      # Local development orchestration
+└── render.yaml             # Production Infrastructure-as-Code (Blueprint)
+```
 
 ---
 
-## 🚀 Installation
+## 🔗 Architecture Flow
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/sethnwoks/Health_App.git
-   cd Health_App
-   ```
-
-2. **Configure Environment**:
-   Create a `.env` in `backend/` and add your AI API key:
-   ```env
-   GEMINI_API_KEY_1=your_key_here
-   DEBUG=True
-   ```
-
-3. **Launch with Docker**:
-   ```bash
-   docker compose up --build
-   ```
+```mermaid
+graph TD
+    User((User)) -->|Food Log Text| React[React Frontend]
+    React -->|POST /parse-log| Django[Django API]
+    Django -->|Analyze Text| AI_Service[Gemini AI Service]
+    AI_Service -->|Rotate Key| Keys[(API Key Pool)]
+    AI_Service -->|Structured JSON| Django
+    Django -->|Enrich Nutrition| DB[(PostgreSQL)]
+    DB -->|Caloric Data| Django
+    Django -->|Final Results| React
+    React -->|Display Results| User
+```
 
 ---
 
-## 🛠️ Usage
+## ✅ Requirements & Installation
 
-Once the app is running:
-1. Navigate to `http://localhost:3000`.
-2. Enter your meal log: *"Breakfast: 2 slices of bread and 2 eggs"*.
-3. Click **Calculate Calories** to see the instant breakdown.
+### 🔧 Configuration
+Create a `.env` file in the `backend/` directory based on `.env.example`:
+```env
+SECRET_KEY=your-secure-key
+GEMINI_API_KEY_1=your-api-key
+DATABASE_URL=postgres://user:pass@localhost:5432/db
+```
 
----
+### 🚀 Local Setup (Docker)
+The easiest way to run the project is via Docker:
+```bash
+docker-compose up --build
+```
+The app will be available at `http://localhost:3000`.
 
-## 🔧 Configuration & Requirements
-
-- **Requirements**: Docker & Docker Compose installed.
-- **Environment Variables**:
-    - `DATABASE_URL`: Automatic fallback to SQLite if not provided.
-    - `AUTH_ENABLED`: Set to `True` to enable JWT registration flows (currently under review).
-    - `CORS_ALLOWED_ORIGINS`: Configure this for production frontend deployment.
-
----
-
-## 📝 Changelog
-
-- **v1.0.0**: Initial release with LLM integration.
-- **v1.1.0**: Migrated from Flask prototype to Django for enterprise-grade scalability.
-- **v1.2.0**: Implemented layered architecture (Service/Repository pattern).
-- **v1.3.0**: Added multi-key rotation and Dockerized PostgreSQL support.
-- **v1.4.0**: Optimized for Anonymous Trial Mode with IP-based rate limiting.
+### 🧪 Running Tests
+We maintain 90%+ coverage on core business logic:
+```bash
+cd backend
+pytest --cov=api tests/
+```
 
 ---
 
 ## 🤝 Contributing
-Contributions are welcome! Please fork the repository and use a feature branch. Pull requests should follow the existing architectural patterns.
+Guidelines for contributing:
+1. Fork the project.
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the Branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+---
+
+## 📝 Changelog
+- **deploy**: add auto-seeding for Nigerian food database (12 minutes ago)
+- **fix**: implement universal failover for all AI service errors (19 minutes ago)
+- **deploy**: fix CORS and API URL protocol for Render (36 minutes ago)
+- **ui**: remove trial mode subtitle (42 minutes ago)
+- **deploy**: loosen dependency versions for better compatibility (59 minutes ago)
+- **fix**: resolve requirements.txt syntax error for CI (75 minutes ago)
+- **deploy**: add render blueprint and final testing updates (81 minutes ago)
+
+---
 
 ## ❤️ Acknowledgements
-- **LLM Providers** for the high-speed inference models.
-- **Nigerian Food Datasets** for the foundational nutritional benchmarks.
+- Built with ❤️ by **Seth N.** as part of a high-performance portfolio.
+- Food data curated from traditional Nigerian nutritional benchmarks.
+- Special thanks to the Google DeepMind team for the Gemini API.
+
+---
+
+📄 **License**  
+Distributed under the MIT License. See `LICENSE` for more information.
