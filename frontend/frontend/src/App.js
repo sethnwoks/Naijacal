@@ -92,20 +92,14 @@ export default function App() {
                         </div>
                     )}
 
-                    {message && !loading && (
-                        <div className="message" style={{ color: parsedItems.length > 0 ? '#2e7d32' : '#b42318' }}>
-                            {message}
-                        </div>
-                    )}
-
                     {parsedItems.length > 0 && !loading && (
-                        <div style={{ marginTop: 24, textAlign: 'left' }}>
-                            <strong style={{ color: '#444', display: 'block', marginBottom: '12px' }}>Your Results:</strong>
+                        <div style={{ marginTop: 32, textAlign: 'left', width: '100%' }}>
+                            <strong style={{ color: '#444', display: 'block', marginBottom: '16px', fontSize: '1.1rem' }}>Your Results:</strong>
                             <div className="results-list">
                                 {parsedItems.map((item, idx) => (
-                                    <div key={idx} className="result-item" style={{ background: '#fff9f0', padding: '12px', borderRadius: '10px', marginBottom: '10px', borderLeft: '4px solid #ffa726' }}>
-                                        <div style={{ fontWeight: 'bold', color: '#333' }}>{item.item}</div>
-                                        <div style={{ fontSize: '0.9rem', color: '#666' }}>
+                                    <div key={idx} className="result-item" style={{ background: '#fff9f0', padding: '16px', borderRadius: '12px', marginBottom: '12px', borderLeft: '4px solid #ffa726' }}>
+                                        <div style={{ fontWeight: 'bold', color: '#333', fontSize: '1.05rem' }}>{item.item}</div>
+                                        <div style={{ fontSize: '0.95rem', color: '#666', marginTop: '4px' }}>
                                             {item.quantity} ➔ <span style={{ color: '#ffa726', fontWeight: 'bold' }}>
                                                 {item.total_calories != null ? `${item.total_calories} cal` : 'Not found in database'}
                                             </span>
@@ -113,8 +107,8 @@ export default function App() {
                                     </div>
                                 ))}
                             </div>
-                            <div style={{ marginTop: 20, textAlign: 'center', borderTop: '2px dashed #ffe0b2', paddingTop: '15px' }}>
-                                <span style={{ fontSize: '1.4rem', fontWeight: '900', color: '#ff8f00' }}>{calories} Total Calories</span>
+                            <div style={{ marginTop: 24, textAlign: 'center', borderTop: '2px dashed #ffe0b2', paddingTop: '20px' }}>
+                                <span style={{ fontSize: '1.5rem', fontWeight: '900', color: '#ff8f00' }}>{calories} Total Calories</span>
                             </div>
                         </div>
                     )}
