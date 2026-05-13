@@ -74,9 +74,6 @@ export default function App() {
                     <div className="hero-copy">
                         <p className="eyebrow">AI-powered calorie estimate for Nigerian meals</p>
                         <h1 className="card-title">Log what you ate. See the calories in seconds.</h1>
-                        <p className="hero-subtitle">
-                            Anonymous trial mode is live. Account features are currently disabled while authentication is under review.
-                        </p>
                     </div>
                     <textarea
                         value={foodLog}
