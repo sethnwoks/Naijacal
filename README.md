@@ -6,7 +6,7 @@
 ### 🚀 [Live Demo: NaijaCal Platform](https://naijacal-frontend.onrender.com)
 
 📖 **Overview**  
-NaijaCal is a production-grade health application designed to bridge the gap in nutritional tracking for West African cuisine. Using Gemini 1.5 Flash and a curated database of Nigerian foods, it interprets natural language logs (e.g., *"I had 2 wraps of eba and a bowl of egusi"*) and provides instant, accurate caloric breakdowns.
+NaijaCal is a production-grade health application designed to bridge the gap in nutritional tracking for West African cuisine. Using Gemini 2.5 Flash and a curated database of Nigerian foods, it interprets natural language logs (e.g., *"I had 2 wraps of eba and a bowl of egusi"*) and provides instant, accurate caloric breakdowns.
 
 ---
 
@@ -21,7 +21,7 @@ NaijaCal is a production-grade health application designed to bridge the gap in 
 
 ## 📦 Technologies
 - **Backend**: Python 3.11, Django 5.0+, Django REST Framework.
-- **AI Engine**: Google Gemini 1.5 Flash (via `google-genai` SDK).
+- **AI Engine**: Google Gemini 2.5 Flash (via `google-genai` SDK).
 - **Frontend**: React.js, Vanilla CSS (Premium Design).
 - **Database**: PostgreSQL (Production), SQLite (Development).
 - **Infrastructure**: Docker, Docker Compose, Render Blueprints.
@@ -114,11 +114,8 @@ Guidelines for contributing:
 
 ---
 
-## ❤️ Acknowledgements
-- Built with ❤️ by **Seth N.** as part of a high-performance portfolio.
-- Food data curated from traditional Nigerian nutritional benchmarks.
-- Special thanks to the Google DeepMind team for the Gemini API.
-
+## Acknowledgements
+- Built by **Seth Nwokolo**
 ---
 
 📄 **License**  
